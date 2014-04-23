@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hearthstone Synergies</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/template.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/d3.min.js"></script>
+    <script src="js/cards.js"></script>
+    <script src="js/graph.js"></script>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Hearthstone Synergies</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar" id="classes">
+            <li class="active"><a class="all">All</a></li>
+          </ul>
+          <div class="nav nav-sidebar">
+            <a class="thumbnail">
+              <img id="thumbnail" width="200" height="303" src="">
+            </a>
+          </div>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <svg id="app"></svg>
+        </div>
+      </div>
+    </div>
+
+    <script>
+
+    var width = 800, // 5000
+    height = 500; // 5000
+
+    var margin = 0,
+    width = parseInt(d3.select("#app").style("width")) - margin*2,
+    height = parseInt(d3.select("#app").style("height")) - margin*2;
+
+    var zoom = d3.behavior.zoom()
+    .scaleExtent([0.3, 2])
+    .on("zoom", function() {
+      svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    });
+
+    var dict = {};
+    var classes = {};
+
+    for (var i=0; i<cards.length; i++) {
+      dict[cards[i].id] = cards[i];
+      classes[cards[i].class] = true;
+    }
+
+    for (var i=0; i<links.length; i++) {
+      links[i].source = dict[links[i].source];
+      links[i].target = dict[links[i].target];
+    }
+
+    classes = Object.keys(classes);
+    for (var i=0; i<classes.length; i++) {
+      var klass = classes[i];
+      if (klass != 'neutral') {
+        var title = klass.charAt(0).toUpperCase() + klass.slice(1)
+        var a = $('<a>')
+        .text(title)
+        .attr('class', klass)
+        $("#classes").append($("<li></li>").append(a));
+      }
+    }
+
+    $('#classes a').click(klass, function() {
+      var klass = $(this).attr('class');
+      if (klass == 'all') {
+        force.nodes(cards);
+        force.links(links);
+      } else {
+        force.nodes(cards.filter(function(card) {
+          return card.class == klass || card.class == 'neutral';
+        }));
+        force.links(links.filter(function(link) {
+          return (link.source.class == klass || link.source.class == 'neutral') &&
+          (link.target.class == klass || link.target.class == 'neutral');
+        }));
+      }
+      update();
+    });
+
+    var svg = d3.select("#app")
+      .call(zoom).append('g');
+
+    var force = d3.layout.force()
+      .nodes(cards)
+      .links(links)
+      .linkDistance(60)
+      .charge(-200)
+      .size([width, height])
+      .on('tick', tick);
+
+    var drag = force.drag()
+      .on("dragstart", function(d) {
+        d3.event.sourceEvent.stopPropagation();
+      });
+
+    var path, circle, text;
+
+    function update() {
+      path = svg.selectAll("path")
+        .data(force.links(), function(d) { return d.source.id + "-" + d.target.id; });
+      path.enter().append("path")
+        .attr("class", function(d) { return "link " + d.type; });
+      path.exit().remove();
+
+      circle = svg.selectAll("circle").data(force.nodes(), function(d) { return d.id;});
+      circle.enter().append("circle")
+        .attr("r", 6).attr("class", function(d) { return "circle " + d.class; })
+        .on("click", thumbnail)
+        .on("mouseover", thumbnail)
+        .call(drag);
+      circle.exit().remove();
+
+      text = svg.selectAll("text").data(force.nodes(), function(d) { return d.id;});
+      text.enter().append("text")
+        .attr("x", 8).attr("y", ".31em")
+        .attr("class", function(d) { return "text " + d.set; })
+        .attr("xlink:href", function(d) { if (d.class != "neutral") { return "/images/" + d.class + ".png"; }})
+        .on("click", thumbnail)
+        .on("mouseover", thumbnail)
+        .text(function(d) { return d.name; });
+      text.exit().remove();
+
+      force.start();
+    }
+
+    function tick() {
+      path.attr("d", linkArc);
+      circle.attr("transform", transform);
+      text.attr("transform", transform);
+    }
+
+    function linkArc(d) {
+      var dx = d.target.x - d.source.x,
+      dy = d.target.y - d.source.y,
+      dr = Math.sqrt(dx * dx + dy * dy);
+      return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+    }
+
+    function transform(d) {
+      return "translate(" + d.x + "," + d.y + ")";
+    }
+
+    function thumbnail(d) {
+      $('#thumbnail').attr('src', d.image);
+    }
+
+    update();
+
+    </script>
+  </body>
+</html>
+
