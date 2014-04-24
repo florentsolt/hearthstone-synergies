@@ -148,7 +148,7 @@
 
         circle = svg.selectAll("circle").data(force.nodes(), function(d) { return d.id;});
         circle.enter().append("circle")
-          .attr("r", 6).attr("class", function(d) { return "circle " + d.class; })
+          .attr("r", 6).attr("class", function(d) { return "circle " + d.quality + " " + d.class; })
           .on("click", thumbnail)
           .on("mouseover", thumbnail)
           .call(drag);
@@ -157,7 +157,7 @@
         text = svg.selectAll("text").data(force.nodes(), function(d) { return d.id;});
         text.enter().append("text")
           .attr("x", 8).attr("y", ".31em")
-          .attr("class", function(d) { return "text " + d.set; })
+          .attr("class", function(d) { return "text " + d.quality + " " + d.class; })
           .attr("xlink:href", function(d) { if (d.class != "neutral") { return "/images/" + d.class + ".png"; }})
           .on("click", thumbnail)
           .on("mouseover", thumbnail)
