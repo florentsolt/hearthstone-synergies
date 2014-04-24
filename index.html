@@ -28,6 +28,10 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="#">Hearthstone Synergies</a>
         </div>
+        <div class="navbar-header navbar-right">
+          <ul id="legend" class="nav navbar-nav">
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -95,6 +99,11 @@
 
       // Build links
       for (var synergie in synergies) {
+        $('#legend')
+          .append($('<li></li>')
+            .addClass(synergie)
+            .html("<a>— " + synergie.replace('_', ' ') + "</a>")
+          );
         for (var i=0; i<triggers[synergie].length; i++) {
           for (var j=0; j<listeners[synergie].length; j++) {
             var source = triggers[synergie][i],
@@ -127,26 +136,34 @@
       // When click on the left menu
       $(window).on('hashchange', function() {
         var klass = window.location.hash.substring(1);
+        noThumbnail();
         filter(klass);
       });
 
       // Main SVG object
       var svg = d3.select("#app")
-        .call(zoom).append('g');
+        .call(zoom)
+        .on("dblclick.zoom", null)
+        .append('g');
+
+      // Create 3 groups to prevent ovelapping
+      svg.append('g').attr('class', 'paths');
+      svg.append('g').attr('class', 'circles');
+      svg.append('g').attr('class', 'texts');
 
       // D3 force layout
       var force = d3.layout.force()
         .nodes([])
         .links([])
         .linkDistance(150)
-        .charge(-2000)
+        .charge(-3000)
+        .gravity(0.5)
         .size([width, height])
         .on('tick', tick);
 
       // Drag behavior
       var drag = force.drag()
         .on("dragstart", function(d) {
-          d.fixed = true;
           d3.event.sourceEvent.stopPropagation();
         });
 
@@ -167,29 +184,36 @@
       var path, circle, text;
 
       function repaint() {
-        path = svg.selectAll("path.link")
+        path = svg.select(".paths")
+          .selectAll("path.link")
           .data(force.links(), function(d) { return d.source.id + "-" + d.target.id; });
         path.enter().append("path")
           .attr("marker-end", function(d) { return "url(#" + d.synergie + ")"; })
           .attr("class", function(d) { return "link " + d.synergie; });
         path.exit().remove();
 
-        circle = svg.selectAll("circle").data(force.nodes(), function(d) { return d.id;});
+        circle = svg.select(".circles")
+          .selectAll("circle")
+          .data(force.nodes(), function(d) { return d.id;});
         circle.enter().append("circle")
-          .attr("r", 9).attr("class", function(d) { return "circle " + d.class + " " + d.quality; })
-          .on("click", thumbnail)
+          .attr("r", 7).attr("class", function(d) { return "circle " + d.class + " " + d.quality; })
+          .on("click", select)
           .on("mouseover", thumbnail)
+          .on("mouseout", noThumbnail)
           .call(drag);
         circle.exit().remove();
 
-        text = svg.selectAll("text").data(force.nodes(), function(d) { return d.id;});
+        text = svg.select('.texts')
+          .selectAll("text")
+          .data(force.nodes(), function(d) { return d.id;});
         text.enter().append("text")
-          .attr("x", 12)
+          .attr("x", 15)
           .attr("y", ".35em")
           .attr("class", function(d) { return "text " + d.quality; })
           .attr("xlink:href", function(d) { if (d.class != "neutral") { return "/images/" + d.class + ".png"; }})
-          .on("click", thumbnail)
+          .on("click", select)
           .on("mouseover", thumbnail)
+          .on("mouseout", noThumbnail)
           .text(function(d) { return d.name; });
         text.exit().remove();
 
@@ -218,22 +242,62 @@
         $('#thumbnail').parent().css('visibility', 'visible');
       }
 
-      function filter(klass) {
-        $('#classes li.active').removeClass('active');
-        $('#classes li a.' + klass).parent().addClass('active');
-        if (klass == 'all') {
-          force.nodes(cards.filter(function(card) {
-            return cards_synergies[card.id];
-          }));
-          force.links(links);
+      function noThumbnail(d) {
+        var id = parseInt(window.location.hash.substring(1));
+        if (id > 0) {
+          thumbnail(dict[id]);
         } else {
-          force.nodes(cards.filter(function(card) {
-            return cards_synergies[card.id] && (card.class == klass || card.class == 'neutral');
-          }));
-          force.links(links.filter(function(link) {
-            return (link.source.class == klass || link.source.class == 'neutral') &&
-            (link.target.class == klass || link.target.class == 'neutral');
-          }));
+          $('#thumbnail').parent().css('visibility', 'hidden');
+          $('#thumbnail').attr('src', '');
+        }
+      }
+
+      function select(d) {
+        window.location = '#' + d.id + " " + d.name;
+      }
+
+      function filter(query) {
+        var id = parseInt(query);
+        $('#classes li.active').removeClass('active');
+
+        // Only show a card
+        if (id > 0) {
+            thumbnail(dict[id]);
+            var linked_with = {};
+            var linked_with_links = [];
+            for (var i=0; i<links.length; i++) {
+              if (links[i].source.id == id) {
+                linked_with[links[i].target.id] = true;
+                linked_with_links.push(links[i]);
+              } else if (links[i].target.id == id) {
+                linked_with[links[i].source.id] = true;
+                linked_with_links.push(links[i]);
+              }
+            }
+            console.log(linked_with);
+            force.nodes(cards.filter(function(card) {
+              return card.id == id || linked_with[card.id];
+            }));
+            force.links(linked_with_links);
+
+        } else {
+          $('#classes li a.' + query).parent().addClass('active');
+          // Show all classes
+          if (query == 'all') {
+            force.nodes(cards.filter(function(card) {
+              return cards_synergies[card.id];
+            }));
+            force.links(links);
+          } else {
+            // Show only a class
+            force.nodes(cards.filter(function(card) {
+              return cards_synergies[card.id] && (card.class == query || card.class == 'neutral');
+            }));
+            force.links(links.filter(function(link) {
+              return (link.source.class == query || link.source.class == 'neutral') &&
+              (link.target.class == query || link.target.class == 'neutral');
+            }));
+          }
         }
         repaint();
       }
