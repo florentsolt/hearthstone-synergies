@@ -21,56 +21,39 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/d3.min.js"></script>
     <script src="js/cards.js"></script>
-    <script src="js/graph.js"></script>
+    <script src="js/synergies.js"></script>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-inverse" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
           <a class="navbar-brand" href="#">Hearthstone Synergies</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
         </div>
       </div>
     </div>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar" id="classes">
-            <li class="active"><a class="all">All</a></li>
-          </ul>
-          <div class="nav nav-sidebar">
-            <a class="thumbnail">
-              <img id="thumbnail" width="200" height="303" src="">
-            </a>
-          </div>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <svg id="app"></svg>
+    <div class="content">
+      <div class="sidebar">
+        <ul class="nav nav-sidebar" id="classes">
+          <li><a href="#all" class="all">All</a></li>
+        </ul>
+        <div class="nav nav-sidebar">
+          <a class="thumbnail">
+            <img id="thumbnail" width="200" height="303" src="">
+          </a>
         </div>
       </div>
+      <svg id="app" class="main"></svg>
     </div>
 
     <script>
 
     $(function() {
+      // Sizing
       var margin = 0,
         width = parseInt($("#app").width()) - margin*2,
         height = parseInt($("#app").outerHeight()) - margin*2;
-        console.log(width, height);
 
-
+      // Zoom behavior
       var zoom = d3.behavior.zoom()
         .scaleExtent([0.3, 2])
         .on("zoom", function() {
@@ -79,17 +62,55 @@
 
       var dict = {};
       var classes = {};
+      var links = [];
 
+      // Build classes & dict
       for (var i=0; i<cards.length; i++) {
         dict[cards[i].id] = cards[i];
         classes[cards[i].class] = true;
       }
 
-      for (var i=0; i<links.length; i++) {
-        links[i].source = dict[links[i].source];
-        links[i].target = dict[links[i].target];
+      // Init triggers & listeners
+      var triggers = {};
+      var listeners = {};
+      for (var id in synergies) {
+        triggers[id] = [];
+        listeners[id] = [];
       }
 
+      // Build triggers & listeners
+      for (var id in cards_synergies) {
+        var card = cards_synergies[id];
+        if (card.trigger) {
+          for (var i=0; i<card.trigger.length; i++) {
+            triggers[card.trigger[i]].push(id);
+          }
+        }
+        if (card.listen) {
+          for (var i=0; i<card.listen.length; i++) {
+            listeners[card.listen[i]].push(id);
+          }
+        }
+      }
+
+      // Build links
+      for (var synergie in synergies) {
+        for (var i=0; i<triggers[synergie].length; i++) {
+          for (var j=0; j<listeners[synergie].length; j++) {
+            var source = triggers[synergie][i],
+              target = listeners[synergie][j];
+            if (source != target) {
+              links.push({
+                source: dict[source],
+                target: dict[target],
+                synergie: synergie
+              });
+            }
+          }
+        }
+      }
+
+      // Build left menu
       classes = Object.keys(classes);
       for (var i=0; i<classes.length; i++) {
         var klass = classes[i];
@@ -97,58 +118,65 @@
           var title = klass.charAt(0).toUpperCase() + klass.slice(1)
           var a = $('<a>')
           .text(title)
+          .attr('href', '#' + klass)
           .attr('class', klass)
           $("#classes").append($("<li></li>").append(a));
         }
       }
 
-      $('#classes a').click(klass, function() {
-        var klass = $(this).attr('class');
-        $('#classes li.active').removeClass('active');
-        $(this).parent().addClass('active');
-        if (klass == 'all') {
-          force.nodes(cards);
-          force.links(links);
-        } else {
-          force.nodes(cards.filter(function(card) {
-            return card.class == klass || card.class == 'neutral';
-          }));
-          force.links(links.filter(function(link) {
-            return (link.source.class == klass || link.source.class == 'neutral') &&
-            (link.target.class == klass || link.target.class == 'neutral');
-          }));
-        }
-        update();
+      // When click on the left menu
+      $(window).on('hashchange', function() {
+        var klass = window.location.hash.substring(1);
+        filter(klass);
       });
 
+      // Main SVG object
       var svg = d3.select("#app")
         .call(zoom).append('g');
 
+      // D3 force layout
       var force = d3.layout.force()
-        .nodes(cards)
-        .links(links)
-        .linkDistance(60)
-        .charge(-200)
+        .nodes([])
+        .links([])
+        .linkDistance(150)
+        .charge(-2000)
         .size([width, height])
         .on('tick', tick);
 
+      // Drag behavior
       var drag = force.drag()
         .on("dragstart", function(d) {
+          d.fixed = true;
           d3.event.sourceEvent.stopPropagation();
         });
 
+      // Build the arrow
+      svg.append("svg:defs").selectAll("marker")
+          .data(Object.keys(synergies))
+          .enter().append("svg:marker")
+          .attr("id", String)
+          .attr("viewBox", "0 -5 10 10")
+          .attr("refX", 20)
+          .attr("refY", -1.5)
+          .attr("markerWidth", 6)
+          .attr("markerHeight", 6)
+          .attr("orient", "auto")
+          .append("svg:path")
+          .attr("d", "M0,-5L10,0L0,5");
+            
       var path, circle, text;
 
-      function update() {
-        path = svg.selectAll("path")
+      function repaint() {
+        path = svg.selectAll("path.link")
           .data(force.links(), function(d) { return d.source.id + "-" + d.target.id; });
         path.enter().append("path")
-          .attr("class", function(d) { return "link " + d.type; });
+          .attr("marker-end", function(d) { return "url(#" + d.synergie + ")"; })
+          .attr("class", function(d) { return "link " + d.synergie; });
         path.exit().remove();
 
         circle = svg.selectAll("circle").data(force.nodes(), function(d) { return d.id;});
         circle.enter().append("circle")
-          .attr("r", 6).attr("class", function(d) { return "circle " + d.quality + " " + d.class; })
+          .attr("r", 9).attr("class", function(d) { return "circle " + d.class + " " + d.quality; })
           .on("click", thumbnail)
           .on("mouseover", thumbnail)
           .call(drag);
@@ -156,8 +184,9 @@
 
         text = svg.selectAll("text").data(force.nodes(), function(d) { return d.id;});
         text.enter().append("text")
-          .attr("x", 8).attr("y", ".31em")
-          .attr("class", function(d) { return "text " + d.quality + " " + d.class; })
+          .attr("x", 12)
+          .attr("y", ".35em")
+          .attr("class", function(d) { return "text " + d.quality; })
           .attr("xlink:href", function(d) { if (d.class != "neutral") { return "/images/" + d.class + ".png"; }})
           .on("click", thumbnail)
           .on("mouseover", thumbnail)
@@ -186,10 +215,31 @@
 
       function thumbnail(d) {
         $('#thumbnail').attr('src', d.image);
-        $('#thumbnail').parent().css('display', 'block');
+        $('#thumbnail').parent().css('visibility', 'visible');
       }
 
-      update();
+      function filter(klass) {
+        $('#classes li.active').removeClass('active');
+        $('#classes li a.' + klass).parent().addClass('active');
+        if (klass == 'all') {
+          force.nodes(cards.filter(function(card) {
+            return cards_synergies[card.id];
+          }));
+          force.links(links);
+        } else {
+          force.nodes(cards.filter(function(card) {
+            return cards_synergies[card.id] && (card.class == klass || card.class == 'neutral');
+          }));
+          force.links(links.filter(function(link) {
+            return (link.source.class == klass || link.source.class == 'neutral') &&
+            (link.target.class == klass || link.target.class == 'neutral');
+          }));
+        }
+        repaint();
+      }
+
+      filter(window.location.hash.substring(1) || 'all');
+      repaint();
     });
 
     </script>
