@@ -20,18 +20,12 @@ body {
 }
 
 .sidebar {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .sidebar {
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f5f5;
-    border-right: 1px solid #eee;
-  }
+  display: block;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  background-color: #f5f5f5;
+  border-right: 1px solid #eee;
 }
 
 .nav-sidebar {
@@ -52,8 +46,9 @@ body {
 
 .nav-sidebar .thumbnail {
   padding: 0px;
-  display: none;
+  display: block;
   margin: 10px;
+  visibility: hidden;
 }
 
 
@@ -61,25 +56,55 @@ body {
   border-color: #ddd;
 }
 
-#app {
-}
-
-.link {
+svg .link {
   fill: none;
   stroke: #666;
   stroke-width: 1.5px;
 }
 
-circle {
+svg #arrow {
+  fill: #666;
+}
+
+svg circle {
   fill: #ccc;
   stroke: #333;
   stroke-width: 1.5px;
   cursor: pointer;
 }
 
-text {
-  font: 10px sans-serif;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+svg text {
+  font-size: 11px;
   cursor: pointer;
+  text-shadow: 0px 0px 6px rgba(255,255,255,0.7);
 }
 
+svg .free {
+  fill: #666;
+}
+
+svg .common, svg .uncommon {
+  fill: black;
+}
+svg circle.common, svg circle.uncommon {
+  fill: white;
+  stroke: black;
+}
+
+svg .rare {
+  fill: #4087ff;
+}
+
+svg .epic {
+  fill: #a411b9
+}
+
+svg .legendary {
+  fill: #e48c22;
+}
+
+/* damage */
+svg .damage_enemy { stroke: red; } 
+svg #damage_enemy { fill: red; }
+svg .damage_friend { stroke: red; } 
+svg #damage_friend { fill: red; }
