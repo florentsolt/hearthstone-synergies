@@ -97,7 +97,6 @@ var App = {
       // When click on the left menu
       $(window).on('hashchange', function() {
         var klass = window.location.hash.substring(1);
-        App.thumbnail(false);
         App.filter(klass);
       });
 
@@ -127,7 +126,6 @@ var App = {
         .linkDistance(150)
         .charge(-3000)
         .gravity(0.5)
-        // .size([width, height])
         .on('tick', App.d3.tick);
 
       // Drag behavior
@@ -184,10 +182,9 @@ var App = {
       // Add new circles
       App.d3.circles.enter().append("circle")
         .attr("r", 7)
+        .attr("card", function(d) {return d.id; })
         .attr("class", function(d) { return "circle " + d.class + " " + d.quality; })
         .on("click", App.d3.onCardClick)
-        .on("mouseover", App.d3.onCardMouseOver)
-        .on("mouseout", App.d3.onCardMouseOut)
         .call(App.d3.drag);
 
       // Remove unused circles
@@ -200,19 +197,26 @@ var App = {
 
       // Add new texts
       App.d3.texts.enter().append("text")
+        .attr("card", function(d) {return d.id; })
         .attr("x", 15)
         .attr("y", ".35em")
         .attr("class", function(d) { return "text " + d.quality; })
         .on("click", App.d3.onCardClick)
-        .on("mouseover", App.d3.onCardMouseOver)
-        .on("mouseout", App.d3.onCardMouseOut)
-        .text(function(d) { return d.name; });
+        .text(function(d) { return d.name; })
+        .call(App.d3.drag);
 
       // Remove unused texts
       App.d3.texts.exit().remove();
 
       // Start rendering
       App.d3.force.start();
+
+      // Tooltips
+      $('svg text').tooltipster({
+        onlyOne: true,
+        interactive: true,
+        functionInit: App.onTooltipInit
+      });
     },
 
     tick: function() {
@@ -237,14 +241,6 @@ var App = {
       window.location = '#' + d.id + "-" + d.name.replace(/\s+/, '-');
     },
 
-    onCardMouseOver: function(d) {
-      App.thumbnail(d);
-    },
-
-    onCardMouseOut: function() {
-      App.thumbnail(false);
-    },
-
     onZoom: function() {
       App.d3.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
     },
@@ -254,9 +250,9 @@ var App = {
     },
 
     onWindowResize: function() {
-      var margin = 0;
-      var width = parseInt($("#app").parent().width()) - margin*2;
-      var height = parseInt($("#app").parent().outerHeight()) - margin*2;
+      var margin = 4;
+      var width = parseInt($("#app").parent().width()) - margin;
+      var height = parseInt($("#app").parent().outerHeight()) - margin;
 
       $('#app').attr('width', width).attr('height', height);
       App.d3.force.size([width, height])
@@ -265,6 +261,7 @@ var App = {
 
   filter: function(query) {
     $('#classes li.active').removeClass('active');
+    $('.rightbar').hide();
 
     // Only show a card
     if (query.match(/^\d+(-|$)/)) {
@@ -283,7 +280,6 @@ var App = {
         return App.cards.ids[id];
       }));
       App.d3.force.links(links);
-      App.thumbnail(card);
 
     // Selection of cards
     } else if (query.match(/^\d+,/)) {
@@ -305,8 +301,24 @@ var App = {
         return App.cards.ids[id];
       }));
       App.d3.force.links(links);
-      App.thumbnail(false);
-
+      $('#deck').empty();
+      ids.values().forEach(function(id) {
+        var card = App.cards.ids[id];
+        var a = $('<a></a>')
+          .attr('href', '#' + card.id)
+          .text(card.name);
+        var li = $('<li></li>')
+          .attr('card', id)
+          .append(a)
+          .tooltipster({
+            onlyOne: true,
+            interactive: true,
+            position: 'left',
+            functionInit: App.onTooltipInit
+          });
+        $('#deck').append(li);
+        $('.rightbar').show();
+      });
     // Highlight the corresponding lest meny entry
     } else {
       $('#classes li a.' + query).parent().addClass('active');
@@ -332,23 +344,17 @@ var App = {
     App.d3.refresh();
   },
 
-  thumbnail: function(card) {
-    if (card) {
-      // Display the card
-      $('#thumbnail').attr('src', card.image);
-      $('#thumbnail').parent().css('visibility', 'visible');
-    } else {
-      // Hide the card
-        if (window.location.hash.match(/^#\d+(-|$)/)) {
-          var id = parseInt(window.location.hash.substring(1));
-          // But if the #hash is an id, display the card
-          App.thumbnail(App.cards.ids[id]);
-        } else {
-          // Really hide the thumbnail
-          $('#thumbnail').parent().css('visibility', 'hidden');
-          $('#thumbnail').attr('src', '');
-        }
-      
+  onTooltipInit: function() {
+    var id = parseInt($(this).attr('card'));
+    if (id > 0) {
+      var card = App.cards.ids[id];
+      var div = $('<div></div>');
+      div.append($('<img>')
+        .attr('src', card.image)
+        .attr('width', '200')
+        .attr('height', '303'));
+      div.append($('<button type="button" class="btn btn-primary btn-block">Add to deck</button>'));
+      return div;
     }
   }
 

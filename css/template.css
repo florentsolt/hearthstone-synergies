@@ -19,7 +19,7 @@ body {
   flex: 1;
 }
 
-.sidebar {
+.leftbar, .rightbar {
   display: block;
   padding: 20px;
   overflow-x: hidden;
@@ -42,18 +42,6 @@ body {
 .nav-sidebar > .active > a {
   color: #fff;
   background-color: #428bca;
-}
-
-.nav-sidebar .thumbnail {
-  padding: 0px;
-  display: block;
-  margin: 10px;
-  visibility: hidden;
-}
-
-
-.nav-sidebar .thumbnail:hover {
-  border-color: #ddd;
 }
 
 svg .link {
@@ -101,6 +89,10 @@ svg .epic {
 
 svg .legendary {
   fill: #e48c22;
+}
+
+.rightbar {
+  display: none;
 }
 
 #legend a   { color: #666; }
