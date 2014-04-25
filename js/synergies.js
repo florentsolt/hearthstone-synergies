@@ -24,11 +24,11 @@ with (App.cards.synergieTypes) {
     // Shied Slam
     546: {trigger: [damage_enemy], listen: [armor]},
     // Upgrade!!
-    511:  {trigger: [weapon, damage_enemy], listen: [weapon]},
+    511:  {trigger: [weapon], listen: [weapon]},
     // Whirlwind
     636:  {trigger: [damage_enemy, damage_friend]},
     // Fiery War Axe
-    401:  {listen: [weapon], trigger: [damage_enemy]},
+    401:  {trigger: [weapon]},
     // Battle Rage
     400:  {listen: [damage_friend]},
     // Cleave
@@ -56,15 +56,15 @@ with (App.cards.synergieTypes) {
     // Mortal Strike
     804:  {trigger: [damage_enemy]},
     // Arathi Weaponsmith
-    538:  {trigger: [weapon, damage_enemy]},
+    538:  {trigger: [weapon]},
     // Kor'kron Elite
     28:   {},
     // Arcanite Reaper
-    304:  {trigger: [weapon, damage_enemy]},
+    304:  {trigger: [weapon]},
     // Brawl
     75:   {},
     // Gorehowl
-    810:  {trigger: [weapon, damage_enemy]},
+    810:  {trigger: [weapon]},
     // Grommash Hellscream
     338:  {listen: [damage_friend]}
 
