@@ -290,7 +290,7 @@ var App = {
       var ids = d3.set(query.match(/(\d+)/g).map(function(id) {
         return parseInt(id);
       }));
-      var nodes = d3.set(ids);
+      var nodes = d3.set(ids.values());
       var links = [];
       App.cards.links.forEach(function(link) {
         if (ids.has(link.source.id) || ids.has(link.target.id)) {
@@ -301,6 +301,7 @@ var App = {
           }
         }
       });
+      console.log(nodes);
       App.d3.force.nodes(nodes.values().map(function(id) {
         return App.cards.ids[id];
       }));
