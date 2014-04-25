@@ -64,7 +64,9 @@ var App = {
       App.cards.eachSynergieTypes(function(type) {
         App.cards.triggers[type].forEach(function(source) {
           App.cards.listeners[type].forEach(function(target) {
-            App.cards.links.push({source: source, target: target, type: type});
+            if (source.id != target.id) {
+              App.cards.links.push({source: source, target: target, type: type});
+            }
           })
         })
       });
@@ -201,7 +203,6 @@ var App = {
         .attr("x", 15)
         .attr("y", ".35em")
         .attr("class", function(d) { return "text " + d.quality; })
-        .attr("xlink:href", function(d) { if (d.class != "neutral") { return "/images/" + d.class + ".png"; }})
         .on("click", App.d3.onCardClick)
         .on("mouseover", App.d3.onCardMouseOver)
         .on("mouseout", App.d3.onCardMouseOut)
@@ -263,31 +264,51 @@ var App = {
   },
 
   filter: function(query) {
-    var id = parseInt(query);
     $('#classes li.active').removeClass('active');
 
     // Only show a card
-    if (id > 0) {
-        var card = App.cards.ids[id];
-        var nodes = d3.set([id]);
-        var links = [];
-        App.cards.links.forEach(function(link) {
-          if (link.source.id == id || link.target.id == id) {
-            nodes.add(link.source.id);
-            nodes.add(link.target.id);
-            if (link.source.id != link.target.id) {
-              links.push(link);
-            }
-          }
-        });
-        App.d3.force.nodes(nodes.values().map(function(id) {
-          return App.cards.ids[id];
-        }));
-        App.d3.force.links(links);
-        App.thumbnail(card);
+    if (query.match(/^\d+(-|$)/)) {
+      var id = parseInt(query);
+      var card = App.cards.ids[id];
+      var nodes = d3.set([id]);
+      var links = [];
+      App.cards.links.forEach(function(link) {
+        if (link.source.id == id || link.target.id == id) {
+          nodes.add(link.source.id);
+          nodes.add(link.target.id);
+          links.push(link);
+        }
+      });
+      App.d3.force.nodes(nodes.values().map(function(id) {
+        return App.cards.ids[id];
+      }));
+      App.d3.force.links(links);
+      App.thumbnail(card);
 
+    // Selection of cards
+    } else if (query.match(/^\d+,/)) {
+      var ids = d3.set(query.match(/(\d+)/g).map(function(id) {
+        return parseInt(id);
+      }));
+      var nodes = d3.set(ids);
+      var links = [];
+      App.cards.links.forEach(function(link) {
+        if (ids.has(link.source.id) || ids.has(link.target.id)) {
+          nodes.add(link.source.id);
+          nodes.add(link.target.id);
+          if (link.source.id != link.target.id) {
+            links.push(link);
+          }
+        }
+      });
+      App.d3.force.nodes(nodes.values().map(function(id) {
+        return App.cards.ids[id];
+      }));
+      App.d3.force.links(links);
+      App.thumbnail(false);
+
+    // Highlight the corresponding lest meny entry
     } else {
-      // Highlight the corresponding lest meny entry
       $('#classes li a.' + query).parent().addClass('active');
 
       // Show all classes
@@ -318,8 +339,8 @@ var App = {
       $('#thumbnail').parent().css('visibility', 'visible');
     } else {
       // Hide the card
-        var id = parseInt(window.location.hash.substring(1));
-        if (id > 0) {
+        if (window.location.hash.match(/^#\d+(-|$)/)) {
+          var id = parseInt(window.location.hash.substring(1));
           // But if the #hash is an id, display the card
           App.thumbnail(App.cards.ids[id]);
         } else {
