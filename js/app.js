@@ -301,7 +301,6 @@ var App = {
           }
         }
       });
-      console.log(nodes);
       App.d3.force.nodes(nodes.values().map(function(id) {
         return App.cards.ids[id];
       }));
