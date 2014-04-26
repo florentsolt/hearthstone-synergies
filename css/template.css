@@ -10,6 +10,16 @@ body {
   margin: 0;
 }
 
+.navbar .container-fluid {
+  display: flex;
+  flex: 1;
+}
+
+.navbar-fixed-bottom {
+  height: auto;
+  min-height: inherit;
+}
+
 .content {
   display: flex;
   flex: 1;
@@ -95,7 +105,11 @@ svg .legendary {
   display: none;
 }
 
-#legend a   { color: #666; }
+#legend a {
+  color: #666;
+  padding: 1px 8px;
+  font-size: 80%;
+}
 
 svg .damage_enemy         { stroke: red; } 
 svg #damage_enemy         { fill: red; }

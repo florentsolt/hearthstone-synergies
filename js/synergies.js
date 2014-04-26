@@ -6,6 +6,10 @@ App.cards.synergieTypes = {
   weapon:           'weapon',
   damage_enemy:     'damage_enemy',
   summon:           'summon',
+  murloc:           'murloc',
+  secret:           'secret',
+  silence:          'silence',
+  taunt:            'taunt',
 };
 
 with (App.cards.synergieTypes) {
@@ -66,8 +70,60 @@ with (App.cards.synergieTypes) {
     // Gorehowl
     810:  {trigger: [weapon]},
     // Grommash Hellscream
-    338:  {listen: [damage_friend]}
+    338:  {listen: [damage_friend]},
 
+    /****************************************************
+    * Neutral
+    ****************************************************/
+
+    // Wisp
+    179: {},
+    // Abusive Sergeant
+    242: {},
+    // Angry Chicken
+    1688: {listen: [damage_friend]},
+    // Argent  Squire
+    757: {},
+    // Bloodsail Corsair
+    997: {},
+    // Elven Archer
+    389: {trigger: [damage_friend, damage_enemy]},
+    // Goldshire Footman
+    922: {},
+    // Grimscale Oracle
+    510: {listen: [murloc]},
+    // Hungry Crab
+    443: {listen: [murloc]},
+    // Leper Gnome
+    658: {},
+    // Lightwarden
+    1655: {listen: [heal]},
+    // Murloc Raider
+    191: {},
+    // Murloc Tidecaller
+    475: {listen: [murloc]},
+    // Secretkeeper
+    158: {listen: [secret]},
+    // Shieldbearer
+    866: {},
+    // Southsea Deckhand
+    724: {listen: [weapon]},
+    // Stonetusk Boar
+    648: {},
+    // Voodoo Doctor
+    132: {trigger: [heal]},
+    // Worgen Infiltrator
+    994: {},
+    // Young Dragonhawk
+    641: {},
+    // Young Priestess
+    1634: {},
+    // Acidic Swamp Ooze
+    906: {},
+    // Amani Berserker
+    790: {listen: [damage_friend]},
+    // Ancient Watcher
+    605: {listen: [silence, taunt]},
   };
 }
 
