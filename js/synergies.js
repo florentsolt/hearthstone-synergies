@@ -7,6 +7,7 @@ App.cards.synergieTypes = {
   damage_enemy:     'damage_enemy',
   summon:           'summon',
   murloc:           'murloc',
+  beast:            'beast',
   secret:           'secret',
   silence:          'silence',
   taunt:            'taunt',
@@ -14,6 +15,64 @@ App.cards.synergieTypes = {
 
 with (App.cards.synergieTypes) {
   App.cards.synergies = {
+
+    /****************************************************
+    * Hunter
+    ****************************************************/
+    // Hunter's Mark
+    141:  {},
+    // Steady Shot
+    229:  {},
+    // Multi-Shot
+    292:  {trigger: [damage_enemy]},
+    // Kill Command
+    296:  {trigger: [damage_enemy, damage_friend], listen:[beast]},
+    // Boar
+    298:  {trigger: [beast]},
+    // Gladiator's Longbow
+    311:  {trigger: [weapon]},
+    // Explosive Shot
+    394:  {trigger: [damage_enemy]},
+    // Animal Companion
+    437:  {trigger: [summon, beast]},
+    // Snake Trap
+    455:  {trigger: [summon, beast]},
+    // Freezing Trap
+    519:  {trigger: [secret]},
+    // Explosive Trap
+    585:  {trigger: [damage_enemy]},
+    // Timber Wolf
+    606:  {trigger: [beast], listen: [beast]},
+    // Tundra Rhino
+    699:  {trigger: [beast], listen: [beast]},
+    // Snipe
+    814:  {trigger: [secret, damage_enemy]},
+    // Arcane Shot
+    877:  {trigger: [damage_enemy, damage_friend]},
+    // Flare
+    896:  {listen: [secret]},
+    // Bestial Wrath
+    903:  {listen: [beast]},
+    // Houndmaster
+    1003: {trigger: [taunt], listen: [beast]},
+    // Tracking
+    1047: {},
+    // Misdirection
+    1091: {trigger: [secret]},
+    // Deadly Shot
+    1093: {trigger: [kill]},
+    // King Krush
+    1144: {trigger: [beast]},
+    // Starving Buzzard
+    1241: {trigger: [beast], listen: [beast]},
+    // Unleash the Hounds
+    1243: {trigger: [summon, beast]},
+    // Savannah Highmane
+    1261: {trigger: [summon, beast], listen: [kill]},
+    // Scavenging Hyena
+    1281: {trigger: [beast], listen: [beast]},
+    // Eaglehorn Bow
+    1662: {trigger: [weapon]},
 
     /****************************************************
     * Warrior
