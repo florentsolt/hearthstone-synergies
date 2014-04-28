@@ -64,40 +64,52 @@ svg #arrow {
   fill: #666;
 }
 
-svg circle {
-  fill: #ccc;
-  stroke: #333;
-  stroke-width: 1.5px;
-  cursor: pointer;
+svg g.card {
+  display: block;
+  height: 20px;
 }
 
-svg text {
+svg g.card circle {
+  fill: #ccc;
+  stroke: transparent;
+  stroke-width: 1.5px;
+  cursor: pointer;
+  display: block;
+}
+
+svg g.card text {
   font-size: 12px;
   cursor: pointer;
   text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+  display: block;
 }
 
-svg .free {
+svg g.card.free text,
+svg g.card.free circle {
   fill: #666;
 }
 
-svg .common, svg .uncommon {
+svg g.card.common text, svg g.card.uncommon text {
   fill: black;
 }
-svg circle.common, svg circle.uncommon {
+
+svg g.card.common circle, svg g.card.uncommon circle {
   fill: white;
-  stroke: black;
+  stroke: grey;
 }
 
-svg .rare {
+svg g.card.rare text,
+svg g.card.rare circle {
   fill: #4087ff;
 }
 
-svg .epic {
+svg g.card.epic text,
+svg g.card.epic circle {
   fill: #a411b9
 }
 
-svg .legendary {
+svg g.card.legendary text,
+svg g.card.legendary circle {
   fill: #e48c22;
 }
 

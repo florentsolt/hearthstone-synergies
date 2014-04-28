@@ -152,7 +152,7 @@ with (App.cards.synergieTypes) {
     // Grimscale Oracle
     510: {listen: [murloc]},
     // Hungry Crab
-    443: {listen: [murloc]},
+    443: {trigger: [beast], listen: [murloc]},
     // Leper Gnome
     658: {},
     // Lightwarden
@@ -182,7 +182,7 @@ with (App.cards.synergieTypes) {
     // Amani Berserker
     790: {listen: [damage_friend]},
     // Ancient Watcher
-    605: {listen: [silence, taunt]},
+    605: {},
   };
 }
 

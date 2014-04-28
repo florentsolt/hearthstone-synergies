@@ -64,7 +64,8 @@ var App = {
       App.cards.eachSynergieTypes(function(type) {
         App.cards.triggers[type].forEach(function(source) {
           App.cards.listeners[type].forEach(function(target) {
-            if (source.id != target.id) {
+            if (source.id != target.id && source.class == target.class ||
+                source.class == 'neutral' || target.class == 'neutral') {
               App.cards.links.push({source: source, target: target, type: type});
             }
           })
@@ -114,10 +115,9 @@ var App = {
         .on("dblclick.zoom", null)
         .append('g');
 
-      // Create 3 groups to prevent ovelapping
+      // Create 2 groups to prevent ovelapping
       App.d3.svg.append('g').attr('class', 'paths');
-      App.d3.svg.append('g').attr('class', 'circles');
-      App.d3.svg.append('g').attr('class', 'texts');
+      App.d3.svg.append('g').attr('class', 'cards');
 
       // D3 force layout
       App.d3.force = d3.layout.force()
@@ -157,8 +157,7 @@ var App = {
     drag: null,
     force: null,
     paths: null,
-    circles: null,
-    texts: null,
+    cards: null,
 
     refresh: function() {
       // Select paths
@@ -174,55 +173,48 @@ var App = {
       // Remove unused paths
       App.d3.paths.exit().remove();
 
-      // Select circles
-      App.d3.circles = App.d3.svg.select(".circles")
-        .selectAll("circle")
+      // Cards = Circles & Texts
+      App.d3.cards = App.d3.svg.select(".cards")
+        .selectAll('g.card')
         .data(App.d3.force.nodes(), function(d) { return d.id;});
 
-      // Add new circles
-      App.d3.circles.enter().append("circle")
-        .attr("r", 7)
+      var g = App.d3.cards.enter().append('g')
         .attr("card", function(d) {return d.id; })
-        .attr("class", function(d) { return "circle " + d.class + " " + d.quality; })
+        .attr("class", function(d) { return "new card " + d.quality; })
         .on("click", App.d3.onCardClick)
         .call(App.d3.drag);
 
-      // Remove unused circles
-      App.d3.circles.exit().remove();
+      g.append("circle")
+        .attr("r", 7);
 
-      // Selection texts
-      App.d3.texts = App.d3.svg.select('.texts')
-        .selectAll("text")
-        .data(App.d3.force.nodes(), function(d) { return d.id;});
-
-      // Add new texts
-      App.d3.texts.enter().append("text")
-        .attr("card", function(d) {return d.id; })
-        .attr("x", 15)
-        .attr("y", ".35em")
-        .attr("class", function(d) { return "text " + d.quality; })
-        .on("click", App.d3.onCardClick)
+      g.append("text")
         .text(function(d) { return d.name; })
-        .call(App.d3.drag);
+        .attr("x", 12)
+        .attr("y", ".35em");
 
-      // Remove unused texts
-      App.d3.texts.exit().remove();
+      // Remove unused cards
+      App.d3.cards.exit().remove();
 
       // Start rendering
       App.d3.force.start();
 
       // Tooltips
-      $('svg text').tooltipster({
+      $('svg g.card.new').tooltipster({
+        offsetX: -8,
+        offsetY: 0,
         onlyOne: true,
         interactive: true,
-        functionInit: App.onTooltipInit
-      });
+        position: 'bottom',
+        functionInit: App.onTooltip
+      }).attr('class', function(i, attr) {
+        // .removeClass seems not working :/
+        return attr.replace("new ", "");
+      })
     },
 
     tick: function() {
       App.d3.paths.attr("d", App.d3.linkArc);
-      App.d3.circles.attr("transform", App.d3.transform);
-      App.d3.texts.attr("transform", App.d3.transform);
+      App.d3.cards.attr("transform", App.d3.transform);
     },
 
     linkArc: function(d) {
@@ -255,7 +247,8 @@ var App = {
       var height = parseInt($("#app").parent().outerHeight()) - margin;
 
       $('#app').attr('width', width).attr('height', height);
-      App.d3.force.size([width, height])
+      App.d3.force.size([width, height]);
+      App.d3.zoom.size([width, height]);
     }
   },
 
@@ -314,11 +307,12 @@ var App = {
             onlyOne: true,
             interactive: true,
             position: 'left',
-            functionInit: App.onTooltipInit
+            functionInit: App.onTooltip
           });
         $('#deck').append(li);
         $('.rightbar').show();
       });
+
     // Highlight the corresponding lest meny entry
     } else {
       $('#classes li a.' + query).parent().addClass('active');
@@ -344,7 +338,7 @@ var App = {
     App.d3.refresh();
   },
 
-  onTooltipInit: function() {
+  onTooltip: function() {
     var id = parseInt($(this).attr('card'));
     if (id > 0) {
       var card = App.cards.ids[id];
