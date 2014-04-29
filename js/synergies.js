@@ -8,9 +8,11 @@ App.cards.synergieTypes = {
   summon:           'summon',
   murloc:           'murloc',
   beast:            'beast',
+  pirate:            'pirate',
   secret:           'secret',
   silence:          'silence',
   taunt:            'taunt',
+  spell:            'spell',
 };
 
 with (App.cards.synergieTypes) {
@@ -150,7 +152,7 @@ with (App.cards.synergieTypes) {
     // Goldshire Footman
     922: {},
     // Grimscale Oracle
-    510: {listen: [murloc]},
+    510: {trigger: [murloc], listen: [murloc]},
     // Hungry Crab
     443: {trigger: [beast], listen: [murloc]},
     // Leper Gnome
@@ -158,9 +160,9 @@ with (App.cards.synergieTypes) {
     // Lightwarden
     1655: {listen: [heal]},
     // Murloc Raider
-    191: {},
+    191: {trigger: [murloc]},
     // Murloc Tidecaller
-    475: {listen: [murloc]},
+    475: {trigger: [murloc], listen: [murloc]},
     // Secretkeeper
     158: {listen: [secret]},
     // Shieldbearer
@@ -168,13 +170,13 @@ with (App.cards.synergieTypes) {
     // Southsea Deckhand
     724: {listen: [weapon]},
     // Stonetusk Boar
-    648: {},
+    648: {trigger: [beast]},
     // Voodoo Doctor
     132: {trigger: [heal]},
     // Worgen Infiltrator
     994: {},
     // Young Dragonhawk
-    641: {},
+    641: {trigger: [beast]},
     // Young Priestess
     1634: {},
     // Acidic Swamp Ooze
@@ -183,6 +185,24 @@ with (App.cards.synergieTypes) {
     790: {listen: [damage_friend]},
     // Ancient Watcher
     605: {affinity: [taunt, silence]},
+    // Bloodfen Raptor
+    216: {trigger: [beast]},
+    // Bloodmage Thalnos
+    749: {listen: [spell]},
+    // Bloodsail Corsair
+    997: {trigger: [pirate], listen: [weapon]},
+    // Bluegill Warrior
+    739: {trigger: [murloc]},
+    // Captain's Parrot
+    530: {trigger: [beast], listen: [pirate]},
+    // Crazed Alchemist
+    801: {},
+    // Dire Wolf Alpha
+    985: {trigger: [beast]},
+    // Doomsayer
+    138: {trigger: [kill]},
+    // Faerie Dragon
+    609: {},
   };
 }
 
