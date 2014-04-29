@@ -8,13 +8,75 @@ App.cards.synergieTypes = {
   summon:           'summon',
   murloc:           'murloc',
   beast:            'beast',
+  pirate:           'pirate',
   secret:           'secret',
   silence:          'silence',
   taunt:            'taunt',
+  spell:            'spell',
+  totem:            'totem',
+  overload:         'overload',
 };
 
 with (App.cards.synergieTypes) {
   App.cards.synergies = {
+
+    /****************************************************
+    * Shaman
+    ****************************************************/
+    // fixme should we add totems ?
+
+    // Ancestral Healing
+    149:  {trigger: [taunt]},
+    // Totemic Might
+    830:  {listen: [totem]},
+    // Earth Shock
+    767:  {trigger: [damage_enemy, damage_friend, silence]},
+    // Forked Lightning
+    299:  {trigger: [damage_enemy, overload]},
+    // Frost Shock
+    971:  {trigger: [damage_enemy]},
+    // Lightning Bolt
+    505:  {trigger: [damage_enemy, damage_friend, overload]},
+    // Rockbiter Weapon
+    239:  {},
+    // Dust Devil
+    618:  {trigger: [overload]},
+    // Stormforged Axe
+    960:  {trigger: [overload, weapon]},
+    // Ancestral Spirit
+    404:  {},
+    // Windfury
+    51:   {},
+    // Flametongue Totem
+    1008: {},
+    // Far Sight
+    818:  {},
+    // Feral Spirit
+    238:  {trigger: [summon, overload]},
+    // Hex
+    766:  {},
+    // Lava Burst
+    864:  {trigger: [overload, damage_enemy, damage_friend]},
+    // Lightning Storm
+    629:  {trigger: [overload, damage_enemy, damage_friend]},
+    // Mana Tide Totem
+    513:  {},
+    // Unbound Elemental
+    774:  {listen: [overload]},
+    // Windspeaker
+    178:  {},
+    // Doomhammer
+    352:  {trigger: [overload]},
+    // Bloodlust
+    1171: {},
+    // Earth Elemental
+    1141: {trigger: [overload]},
+    // Fire Elemental
+    189:  {trigger: [damage_enemy, damage_friend]},
+    // Al'Akir the Windlord
+    32:   {},
+    // Totemic Call
+    687:  {trigger: [summon, totem]},
 
     /****************************************************
     * Hunter
@@ -144,13 +206,13 @@ with (App.cards.synergieTypes) {
     // Argent  Squire
     757: {},
     // Bloodsail Corsair
-    997: {},
+    997: {trigger: [pirate]},
     // Elven Archer
     389: {trigger: [damage_friend, damage_enemy]},
     // Goldshire Footman
     922: {},
     // Grimscale Oracle
-    510: {listen: [murloc]},
+    510: {trigger: [murloc], listen: [murloc]},
     // Hungry Crab
     443: {trigger: [beast], listen: [murloc]},
     // Leper Gnome
@@ -158,9 +220,9 @@ with (App.cards.synergieTypes) {
     // Lightwarden
     1655: {listen: [heal]},
     // Murloc Raider
-    191: {},
+    191: {trigger: [murloc]},
     // Murloc Tidecaller
-    475: {listen: [murloc]},
+    475: {trigger: [murloc], listen: [murloc]},
     // Secretkeeper
     158: {listen: [secret]},
     // Shieldbearer
@@ -168,13 +230,13 @@ with (App.cards.synergieTypes) {
     // Southsea Deckhand
     724: {listen: [weapon]},
     // Stonetusk Boar
-    648: {},
+    648: {trigger: [beast]},
     // Voodoo Doctor
     132: {trigger: [heal]},
     // Worgen Infiltrator
     994: {},
     // Young Dragonhawk
-    641: {},
+    641: {trigger: [beast]},
     // Young Priestess
     1634: {},
     // Acidic Swamp Ooze
@@ -183,6 +245,22 @@ with (App.cards.synergieTypes) {
     790: {listen: [damage_friend]},
     // Ancient Watcher
     605: {affinity: [taunt, silence]},
+    // Bloodfen Raptor
+    216: {trigger: [beast]},
+    // Bloodmage Thalnos
+    749: {listen: [spell]},
+    // Bluegill Warrior
+    739: {trigger: [murloc]},
+    // Captain's Parrot
+    530: {trigger: [beast], listen: [pirate]},
+    // Crazed Alchemist
+    801: {},
+    // Dire Wolf Alpha
+    985: {trigger: [beast]},
+    // Doomsayer
+    138: {trigger: [kill]},
+    // Faerie Dragon
+    609: {},
   };
 }
 
