@@ -8,15 +8,75 @@ App.cards.synergieTypes = {
   summon:           'summon',
   murloc:           'murloc',
   beast:            'beast',
-  pirate:            'pirate',
+  pirate:           'pirate',
   secret:           'secret',
   silence:          'silence',
   taunt:            'taunt',
   spell:            'spell',
+  totem:            'totem',
+  overload:         'overload',
 };
 
 with (App.cards.synergieTypes) {
   App.cards.synergies = {
+
+    /****************************************************
+    * Shaman
+    ****************************************************/
+    // fixme should we add totems ?
+
+    // Ancestral Healing
+    149:  {trigger: [taunt]},
+    // Totemic Might
+    830:  {listen: [totem]},
+    // Earth Shock
+    767:  {trigger: [damage_enemy, damage_friend, silence]},
+    // Forked Lightning
+    299:  {trigger: [damage_enemy, overload]},
+    // Frost Shock
+    971:  {trigger: [damage_enemy]},
+    // Lightning Bolt
+    505:  {trigger: [damage_enemy, damage_friend, overload]},
+    // Rockbiter Weapon
+    239:  {},
+    // Dust Devil
+    618:  {trigger: [overload]},
+    // Stormforged Axe
+    960:  {trigger: [overload, weapon]},
+    // Ancestral Spirit
+    404:  {},
+    // Windfury
+    51:   {},
+    // Flametongue Totem
+    1008: {},
+    // Far Sight
+    818:  {},
+    // Feral Spirit
+    238:  {trigger: [summon, overload]},
+    // Hex
+    766:  {},
+    // Lava Burst
+    864:  {trigger: [overload, damage_enemy, damage_friend]},
+    // Lightning Storm
+    629:  {trigger: [overload, damage_enemy, damage_friend]},
+    // Mana Tide Totem
+    513:  {},
+    // Unbound Elemental
+    774:  {listen: [overload]},
+    // Windspeaker
+    178:  {},
+    // Doomhammer
+    352:  {trigger: [overload]},
+    // Bloodlust
+    1171: {},
+    // Earth Elemental
+    1141: {trigger: [overload]},
+    // Fire Elemental
+    189:  {trigger: [damage_enemy, damage_friend]},
+    // Al'Akir the Windlord
+    32:   {},
+    // Totemic Call
+    687:  {trigger: [summon, totem]},
 
     /****************************************************
     * Hunter
@@ -146,7 +206,7 @@ with (App.cards.synergieTypes) {
     // Argent  Squire
     757: {},
     // Bloodsail Corsair
-    997: {},
+    997: {trigger: [pirate]},
     // Elven Archer
     389: {trigger: [damage_friend, damage_enemy]},
     // Goldshire Footman
@@ -189,8 +249,6 @@ with (App.cards.synergieTypes) {
     216: {trigger: [beast]},
     // Bloodmage Thalnos
     749: {listen: [spell]},
-    // Bloodsail Corsair
-    997: {trigger: [pirate], listen: [weapon]},
     // Bluegill Warrior
     739: {trigger: [murloc]},
     // Captain's Parrot
