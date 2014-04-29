@@ -182,7 +182,7 @@ with (App.cards.synergieTypes) {
     // Amani Berserker
     790: {listen: [damage_friend]},
     // Ancient Watcher
-    605: {},
+    605: {affinity: [taunt, silence]},
   };
 }
 

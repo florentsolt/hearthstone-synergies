@@ -21,6 +21,7 @@ var App = {
     synergies: {},
     triggers: {},
     listeners: {},
+    affinities: {},
 
     eachSynergieTypes: function(fn) {
       for (var id in App.cards.synergieTypes) {
@@ -44,13 +45,14 @@ var App = {
         App.cards.classes.add(card.class);
       });
 
-      // Init triggers & listeners with empty sets
+      // Init triggers & listeners & affinities with empty sets
       App.cards.eachSynergieTypes(function(type) {
         App.cards.triggers[type] = [];
         App.cards.listeners[type] = [];
+        App.cards.affinities[type] = [];
       });
 
-      // Build triggers & listeners
+      // Build triggers & listeners & affinities
       App.cards.eachSynergies(function(card, synergy) {
         (synergy.trigger || []).forEach(function(trigger) {
           App.cards.triggers[trigger].push(card);
@@ -58,30 +60,72 @@ var App = {
         (synergy.listen || []).forEach(function(listen) {
           App.cards.listeners[listen].push(card);
         });
+        (synergy.affinity || []).forEach(function(affinity) {
+          App.cards.affinities[affinity].push(card);
+        });
       });
 
       // Build links
       App.cards.eachSynergieTypes(function(type) {
         App.cards.triggers[type].forEach(function(source) {
+
+          // trigger -> listen
           App.cards.listeners[type].forEach(function(target) {
             if (source.id != target.id && source.class == target.class ||
                 source.class == 'neutral' || target.class == 'neutral') {
-              App.cards.links.push({source: source, target: target, type: type});
+              App.cards.links.push({
+                source: source, target: target, type: type, affinity: false
+              });
             }
-          })
+          });
+
+          // trigger -> affinity
+          App.cards.affinities[type].forEach(function(target) {
+            if (source.id != target.id && source.class == target.class ||
+                source.class == 'neutral' || target.class == 'neutral') {
+              App.cards.links.push({
+                source: source, target: target, type: type, affinity: true
+              });
+            }
+          });
+
         })
       });
     },
 
+    colors: {
+      'orange': ['#e80000', '#ff7f0e', '#ffba00', '#ffd800', '#f6af8c', '#ffd38a'],
+      'green': ['#627331', '#009b21', '#96bc0d', '#c6e300', '#e5ff36', '#c4c200', '#a5e779'],
+      'pink': ['#961d56', '#c60089', '#ea66af', '#e7a6aa', '#f4ca9d', '#f09b71', '#e4b6ec'],
+      'violet': ['#50229d', '#a353d1', '#796dd4', '#aa8ce7', '#b9b7e2', '#c5a6eb', '#d3ade1'],
+      'blue': ['#0074df', '#078d93', '#2ac2dd', '#7bbaf7', '#c3e1ff', '#94dfe9', '#b7c1e2'],
+      'grey': ['#101010', '#444444', '#888888', '#aaaaaa', '#cccccc', '#222222', '#666666']
+    },
+
     dom: function() {
+
       // Build legend
+      var css = "";
+      var color_i = 0;
+      var color_group = 0;
+
       App.cards.eachSynergieTypes(function(type) {
         $('#legend')
           .append($('<li></li>')
             .addClass(type)
             .html("<a>— " + type.replace('_', ' ') + "</a>")
           );
+          color = App.build.colors[Object.keys(App.build.colors)[color_group]][color_i];
+          css += "svg ." + type + " { stroke: " + color + "; }\n";
+          css += "svg #" + type + " { fill: " + color + "; }\n";
+          css += "#legend ." + type+ " a { color: " + color + "; }\n";
+          color_group++;
+          if (color_group >= Object.keys(App.build.colors).length) {
+            color_group = 0;
+            color_i++;
+          }
       });
+      $('body').append("<style>\n" + css + '</style>\n');
 
       // Build left menu
       App.cards.classes.forEach(function(klass) {
@@ -168,7 +212,7 @@ var App = {
       // Add new paths
       App.d3.paths.enter().append("path")
         .attr("marker-end", function(d) { return "url(#" + d.type + ")"; })
-        .attr("class", function(d) { return "link " + d.type; });
+        .attr("class", function(d) { return "link " + d.type + (d.affinity ? " affinity" : ""); });
 
       // Remove unused paths
       App.d3.paths.exit().remove();
@@ -219,8 +263,8 @@ var App = {
 
     linkArc: function(d) {
       var dx = d.target.x - d.source.x,
-      dy = d.target.y - d.source.y,
-      dr = Math.sqrt(dx * dx + dy * dy);
+        dy = d.target.y - d.source.y,
+        dr = Math.sqrt(dx * dx + dy * dy);
       return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
     },
 
@@ -282,7 +326,7 @@ var App = {
       var nodes = d3.set(ids.values());
       var links = [];
       App.cards.links.forEach(function(link) {
-        if (ids.has(link.source.id) || ids.has(link.target.id)) {
+        if (ids.has(link.source.id) && ids.has(link.target.id)) {
           nodes.add(link.source.id);
           nodes.add(link.target.id);
           if (link.source.id != link.target.id) {
@@ -343,6 +387,7 @@ var App = {
     if (id > 0) {
       var card = App.cards.ids[id];
       var div = $('<div></div>');
+      div.append($('<em></em>').text('#' + id));
       div.append($('<img>')
         .attr('src', card.image)
         .attr('width', '200')

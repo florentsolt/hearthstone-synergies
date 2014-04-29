@@ -54,14 +54,26 @@ body {
   background-color: #428bca;
 }
 
+.tooltipster-content {
+  position: relative;
+}
+
+.tooltipster-content em {
+  display: block;
+  position: absolute;
+  top: .5em;
+  right: .5em;
+  color: #888;
+}
+
 svg .link {
   fill: none;
-  stroke: #666;
+  stroke: transparent;
   stroke-width: 1.5px;
 }
 
-svg #arrow {
-  fill: #666;
+svg .link.affinity {
+  stroke-dasharray: 5;
 }
 
 svg g.card {
@@ -118,16 +130,8 @@ svg g.card.legendary circle {
 }
 
 #legend a {
-  color: #666;
+  color: transparent;
   padding: 1px 8px;
   font-size: 80%;
 }
-
-svg .damage_enemy         { stroke: red; } 
-svg #damage_enemy         { fill: red; }
-#legend .damage_enemy a   { color: red; }
-
-svg .damage_friend        { stroke: green; } 
-svg #damage_friend        { fill: green; }
-#legend .damage_friend a  { color: green; }
 
