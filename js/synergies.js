@@ -9,6 +9,7 @@ App.cards.synergieTypes = {
   murloc:           'murloc',
   beast:            'beast',
   pirate:           'pirate',
+  demon:            'demon',
   secret:           'secret',
   silence:          'silence',
   taunt:            'taunt',
@@ -19,6 +20,61 @@ App.cards.synergieTypes = {
 
 with (App.cards.synergieTypes) {
   App.cards.synergies = {
+
+    /****************************************************
+    * Warlock
+    ****************************************************/
+
+    // Sacrificial Pact
+    163:  {trigger: [heal], listen: [demon]},
+    // Soulfire
+    974:  {trigger: [damage_enemy]},
+    // Corruption
+    982:  {trigger: [kill]},
+    // Mortal Coil
+    1092: {trigger: [damage_enemy, damage_friend]},
+    // Power Overwhelming
+    846:  {},
+    // Blood Imp
+    469:  {trigger: [demon]},
+    // Flame Imp
+    1090: {trigger: [demon]},
+    // Voidwalker
+    48:   {trigger: [demon]},
+    // Demonfire
+    1142: {trigger: [damage_enemy]},
+    // Succubus
+    592:  {trigger: [demon]},
+    // Drain Life
+    919:  {trigger: [damage_enemy, damage_friend, heal]},
+    // Sense Demons
+    860:  {listen: [demon]},
+    // Shadow Bolt
+    914:  {trigger: [damage_enemy]},
+    // Felguard
+    517:  {trigger: [demon]},
+    // Void Terror
+    1221: {trigger: [demon]},
+    // Hellfire
+    950:  {trigger: [damage_enemy]},
+    // Shadowflame
+    147:  {trigger: [damage_enemy, kill]},
+    // Pit Lord
+    783:  {trigger: [demon]},
+    // Summoning Portal
+    969:  {},
+    // Bane of Doom
+    23:   {trigger: [damage_enemy, damage_friend, summon]},
+    // Doomguard
+    631:  {trigger: [demon]},
+    // Siphon Soul
+    1100: {trigger: [kill, heal]},
+    // Dread Infernal
+    1019: {trigger: [damage_enemy, damage_friend, demon]},
+    // Twisting Nether
+    859:  {},
+    // Lord Jaraxxus
+    492:  {},
 
     /****************************************************
     * Shaman
