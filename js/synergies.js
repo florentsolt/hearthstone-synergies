@@ -431,7 +431,7 @@ with (App.cards.synergieTypes) {
     // Demolisher
     979:  {trigger: [damage_enemy]},
     // Earthen Ring Farseer
-    1651: {trigger: [heal]},
+    1651: {trigger: [heal_minion, heal_hero]},
     // Emperor Cobra
     1098: {trigger: [beast, kill], affinity: [taunt]},
     // Flesheating Ghoul
