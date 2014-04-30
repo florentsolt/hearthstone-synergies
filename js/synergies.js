@@ -1,10 +1,11 @@
 App.cards.synergieTypes = {
-  heal:             'heal',
+  heal_minion:     'heal_minion',
+  heal_hero:        'heal_hero',
   damage_friend:    'damage_friend',
+  damage_enemy:     'damage_enemy',
   kill:             'kill',
   armor:            'armor',
   weapon:           'weapon',
-  damage_enemy:     'damage_enemy',
   summon:           'summon',
   murloc:           'murloc',
   beast:            'beast',
@@ -16,17 +17,73 @@ App.cards.synergieTypes = {
   spell:            'spell',
   totem:            'totem',
   overload:         'overload',
+  divine_shield:    'divine_shield',
 };
 
 with (App.cards.synergieTypes) {
   App.cards.synergies = {
 
     /****************************************************
+    * Paladin
+    ****************************************************/
+
+    // Light's Justice
+    383: {trigger: [weapon]},
+    // Blessing of Might
+    70: {},
+    // Blessing of Wisdom
+    1373: {},
+    // Eye for an Eye
+    462: {trigger: [secret]},
+    // Hand of Protection
+    727: {trigger: [divine_shield]},
+    // Humility
+    854: {},
+    // Noble Sacrifice
+    584: {trigger: [secret, summon]},
+    // Redemption
+    140: {trigger: [secret, summon]},
+    // Repentance
+    232: {trigger: [secret]},
+    // Equality
+    756: {affinity: [damage_enemy]},
+    // Holy Light
+    291: {trigger: [heal_minion, heal_hero]},
+    // Argent Protector
+    1022: {trigger: [divine_shield]},
+    // Sword of Justice
+    643: {trigger: [weapon], listen: [summon]},
+    // Divine Favor
+    679: {},
+    // Aldor Peacekeeper
+    1167: {},
+    // Truesilver Champion
+    847: {trigger: [weapon, heal_hero]},
+    // Blessing of Kings
+    943: {affinity: [summon]},
+    // Consecration
+    476: {trigger: [damage_enemy]},
+    // Hammer of Wrath
+    250: {trigger: [damage_enemy]},
+    // Blessed Champion
+    1522: {},
+    // Holy Wrath
+    435: {trigger: [damage_enemy]},
+    // Avenging Wrath
+    1174: {trigger: [damage_enemy]},
+    // Guardian of Kings
+    1068: {trigger: [heal_hero]},
+    // Lay on Hands
+    594: {trigger: [heal_hero, heal_minion]},
+    // Tirion Fordring
+    890: {trigger: [divine_shield, weapon]},
+
+    /****************************************************
     * Warlock
     ****************************************************/
 
     // Sacrificial Pact
-    163:  {trigger: [heal], listen: [demon]},
+    163:  {trigger: [heal_hero], listen: [demon]},
     // Soulfire
     974:  {trigger: [damage_enemy]},
     // Corruption
@@ -46,7 +103,7 @@ with (App.cards.synergieTypes) {
     // Succubus
     592:  {trigger: [demon]},
     // Drain Life
-    919:  {trigger: [damage_enemy, damage_friend, heal]},
+    919:  {trigger: [damage_enemy, damage_friend, heal_hero]},
     // Sense Demons
     860:  {listen: [demon]},
     // Shadow Bolt
@@ -68,7 +125,7 @@ with (App.cards.synergieTypes) {
     // Doomguard
     631:  {trigger: [demon]},
     // Siphon Soul
-    1100: {trigger: [kill, heal]},
+    1100: {trigger: [kill, heal_hero]},
     // Dread Infernal
     1019: {trigger: [damage_enemy, damage_friend, demon]},
     // Twisting Nether
@@ -82,7 +139,7 @@ with (App.cards.synergieTypes) {
     // fixme should we add totems ?
 
     // Ancestral Healing
-    149:  {trigger: [taunt]},
+    149:  {trigger: [taunt, heal_minion]},
     // Totemic Might
     830:  {listen: [totem]},
     // Earth Shock
@@ -274,7 +331,7 @@ with (App.cards.synergieTypes) {
     // Leper Gnome
     658: {},
     // Lightwarden
-    1655: {listen: [heal]},
+    1655: {listen: [heal_minion]},
     // Murloc Raider
     191: {trigger: [murloc]},
     // Murloc Tidecaller
@@ -288,7 +345,7 @@ with (App.cards.synergieTypes) {
     // Stonetusk Boar
     648: {trigger: [beast]},
     // Voodoo Doctor
-    132: {trigger: [heal]},
+    132: {trigger: [heal_hero, heal_minion]},
     // Worgen Infiltrator
     994: {},
     // Young Dragonhawk
