@@ -258,7 +258,7 @@ with (App.cards.synergieTypes) {
     // Abusive Sergeant
     242: {},
     // Angry Chicken
-    1688: {listen: [damage_friend]},
+    1688: {trigger: [beast], listen: [damage_friend]},
     // Argent  Squire
     757: {},
     // Bloodsail Corsair
@@ -317,6 +317,160 @@ with (App.cards.synergieTypes) {
     138: {trigger: [kill]},
     // Faerie Dragon
     609: {},
+    // Frostwolf Grunt
+    41:  {},
+    // Ironbeak Owl
+    290:  {trigger: [beast, silence]},
+    // Knife Juggler
+    1073: {listen: [summon]},
+    // Kobold Geomancer
+    672:  {listen: [spell]},
+    // Loot Hoarder
+    251:  {},
+    // Lorewalker Cho
+    1135: {listen: [spell]},
+    // Mad Bomber
+    762:  {trigger: [damage_enemy, damage_friend]},
+    // Mana Addict
+    12:   {listen: [spell]},
+    // Mana Wraith
+    715:  {},
+    // Master Swordsmith
+    351:  {},
+    // Millhouse Manastorm
+    855:  {},
+    // Murloc Tidehunter
+    976:  {trigger: [summon, murloc]},
+    // Nat Pagle
+    1147: {},
+    // Novice Engineer
+    284:  {},
+    // Pint-Sized Summoner
+    37:   {},
+    // River Crocolisk
+    1369: {trigger: [beast]},
+    // Sunfury Protector
+    891:  {trigger: [taunt]},
+    // Wild Pyromancer
+    1014: {trigger: [damage_enemy, damage_friend], listen: [spell]},
+    // Youthful Brewmaster
+    415:  {},
+    // Acolyte of Pain
+    1659: {},
+    // Alarm-o-Bot
+    1658: {},
+    // Arcane Golem
+    466:  {},
+    // Big Game Hunter
+    1657: {trigger: [kill]},
+    // Blood Knight -- listen divine shield ?
+    755:  {},
+    // Coldlight Oracle
+    1016: {trigger: [murloc]},
+    // Coldlight Seer
+    453:  {trigger: [murloc], listen: [murloc]},
+    // Dalaran Mage
+    175:  {listen: [spell]},
+    // Demolisher
+    979:  {trigger: [damage_enemy]},
+    // Earthen Ring Farseer
+    1651: {trigger: [heal]},
+    // Emperor Cobra
+    1098: {trigger: [beast, kill], affinity: [taunt]},
+    // Flesheating Ghoul
+    // Harvest Golem
+    // Imp Master
+    // Injured Blademaster
+    // Ironforge Rifleman
+    // Ironfur Grizzly
+    // Jungle Panther
+    // King Mukla
+    // Magma Rager
+    // Mind Control Tech
+    // Murloc Warleader
+    // Questing Adventurer
+    // Raging Worgen
+    // Raid Leader
+    // Razorfen Hunter
+    // Scarlet Crusader
+    // Shattered Sun Cleric
+    // Silverback Patriarch
+    // Southsea Captain
+    // Tauren Warrior
+    // Thrallmar Farseer
+    // Tinkmaster Overspark
+    // Wolfrider
+    // Ancient Brewmaster
+    // Ancient Mage
+    // Chillwind Yeti
+    // Cult Master
+    // Dark Iron Dwarf
+    // Defender of Argus
+    // Dragonling Mechanic
+    // Dread Corsair
+    // Gnomish Inventor
+    // Leeroy Jenkins
+    // Mogu'shan Warden
+    // Oasis Snapjaw
+    // Ogre Magi
+    // Old Murk-Eye
+    // Sen'jin Shieldmasta
+    // Silvermoon Guardian
+    // Spellbreaker
+    // Stormwind Knight
+    // Twilight Drake
+    // Violet Teacher
+    // Abomination
+    // Azure Drake
+    // Booty Bay Bodyguard
+    // Captain Greenskin
+    // Darkscale Healer
+    // Elite Tauren Chieftain
+    // Faceless Manipulator
+    // Fen Greeper
+    // Frostwolf Warlord
+    // Gadgetzan Auctioneer
+    // Gurubashi Berserker
+    // Harrison Jones
+    // Nightblade
+    // Silver Hand Knight
+    // Spiteful Smith
+    // Stampeding Kodo
+    // Stormpike Commando
+    // Stranglethorn Tiger
+    // Venture Co. Mercenary
+    // Archmage
+    // Argent Commander
+    // Boulderfist Orge
+    // Cairne Bloodhoof
+    // Frost Elemental
+    // Gelbin Mekkatorque
+    // Hogger
+    // Illidan Stormrage
+    // Lord of the Arena
+    // Priestess of Elune
+    // Reckless Rocketeer
+    // Sunwalker
+    // Sylvanas Windrunner
+    // The Beast
+    // The Black Knight
+    // Windfury Harpy
+    // Baron Geddon
+    // Core Hound
+    // Ravenholdt Assassin
+    // Stormwind Champion
+    // War Golem
+    // Gruul
+    // Ragnaros the Firelord
+    // Alexstrasza
+    // Malygos
+    // Nozdormu
+    // Onyxia
+    // Ysera
+    // Deathwing
+    // Sea Giant
+    // Mountain Giant
+    // Molten Giant
   };
 }
 
