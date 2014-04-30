@@ -1,5 +1,5 @@
 App.cards.synergieTypes = {
-  heal_minion:     'heal_minion',
+  heal_minion:      'heal_minion',
   heal_hero:        'heal_hero',
   damage_friend:    'damage_friend',
   damage_enemy:     'damage_enemy',

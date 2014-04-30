@@ -168,7 +168,7 @@ var App = {
         .nodes([])
         .links([])
         .linkDistance(150)
-        .charge(-3000)
+        .charge(-2000)
         .gravity(0.5)
         .on('tick', App.d3.tick);
 
@@ -204,6 +204,9 @@ var App = {
     cards: null,
 
     refresh: function() {
+      // Stop rendering
+      App.d3.force.stop();
+
       // Select paths
       App.d3.paths = App.d3.svg.select(".paths")
         .selectAll("path.link")
@@ -242,6 +245,12 @@ var App = {
       // Start rendering
       App.d3.force.start();
 
+      // Quicky find a good position
+      for (var i=0; i<20; i++) { App.d3.force.tick() };
+
+      // Zoom to fit
+      App.zoomTofit();
+
       // Tooltips
       $('svg g.card.new').tooltipster({
         offsetX: -8,
@@ -254,6 +263,7 @@ var App = {
         // .removeClass seems not working :/
         return attr.replace("new ", "");
       })
+
     },
 
     tick: function() {
@@ -395,6 +405,23 @@ var App = {
       div.append($('<button type="button" class="btn btn-primary btn-block">Add to deck</button>'));
       return div;
     }
+  },
+
+  zoomTofit: function() {
+    var outside = {
+      width: $('#app').width(), 
+      height: $('#app').height() - $('#legend').height()
+    };
+    var inside = App.d3.svg[0][0].getBBox();
+    var scale = .8 / Math.max(inside.width / outside.width, inside.height / outside.height);
+    scale = Math.max(App.d3.zoom.scaleExtent()[0], scale);
+    scale = Math.min(App.d3.zoom.scaleExtent()[1], scale);
+    var x = inside.x + inside.width / 2;
+    var y = inside.y + inside.height / 2;
+    var translate = [outside.width / 2 - scale * x, outside.height / 2 - scale * y];
+
+    App.d3.zoom.scale(scale).translate(translate);
+    App.d3.zoom.event(App.d3.svg.transition().duration(1000));
   }
 
 };
