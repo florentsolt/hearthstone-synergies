@@ -15,13 +15,73 @@ App.cards.synergieTypes = {
   silence:          'silence',
   taunt:            'taunt',
   spell:            'spell',
+  spell_damage:     'spell_damage',
   totem:            'totem',
   overload:         'overload',
   divine_shield:    'divine_shield',
+  freeze:           'freeze'
 };
 
 with (App.cards.synergieTypes) {
   App.cards.synergies = {
+
+    // The Coin
+    1746: {trigger: [spell]},
+
+    /****************************************************
+    * Mage
+    ****************************************************/
+
+    // Arcane Missiles
+    564: {trigger: [damage_enemy, spell], listen: [spell_damage]},
+    // Ice Lance
+    172: {trigger: [spell, freeze], listen: [freeze, spell_damage]},
+    // Mirror Image
+    960: {trigger: [spell]},
+    // Mana Wyrm
+    405: {listen: [spell]},
+    // Arcane Explosion
+    447: {trigger: [spell, damage_enemy], listen: [spell_damage]},
+    // Frostbolt
+    662: {trigger: [spell, damage_enemy, freeze], listen: [spell_damage]},
+    // Sorcerer's Apprentice
+    614: {listen: [spell]},
+    // Arcane Intellect
+    555: {trigger: [spell]},
+    // Counterspell
+    113: {trigger: [spell, secret]},
+    // Frost Nova
+    587: {trigger: [freeze]},
+    // Ice Barrier
+    621: {trigger: [armor, secret, spell]},
+    // Ice Block
+    192: {trigger: [spell, secret]},
+    // Mirror Entity
+    195: {trigger: [spell, secret, summon]},
+    // Spellbender
+    366: {trigger: [spell, secret, summon]},
+    // Vaporize
+    286: {trigger: [spell, secret]},
+    // Kirin Tor Mage
+    748: {listen: [secret]},
+    // Cone of Cold
+    430: {trigger: [spell, damage_enemy, freeze]},
+    // Fireball
+    315: {trigger: [spell, damage_enemy]},
+    // Polymorph
+    77: {trigger: [spell]},
+    // Ethereal Arcanist
+    1737: {listen: [secret]},
+    // Water Elemental
+    395: {trigger: [freeze]},
+    // Blizzard
+    457: {trigger: [spell, damage_enemy, freeze]},
+    // Flamestrike
+    1004: {trigger: [spell, damage_enemy]},
+    // Archmage Antonidas
+    1080: {listen: [spell]},
+    // Pyroblast
+    1087: {trigger: [spell, damage_enemy]},
 
     /****************************************************
     * Paladin
@@ -30,51 +90,51 @@ with (App.cards.synergieTypes) {
     // Light's Justice
     383: {trigger: [weapon]},
     // Blessing of Might
-    70: {},
+    70: {trigger: [spell]},
     // Blessing of Wisdom
-    1373: {},
+    1373: {trigger: [spell]},
     // Eye for an Eye
-    462: {trigger: [secret]},
+    462: {trigger: [secret, spell, damage_enemy]},
     // Hand of Protection
-    727: {trigger: [divine_shield]},
+    727: {trigger: [divine_shield, spell]},
     // Humility
-    854: {},
+    854: {trigger: [spell], affinity: [damage_enemy]},
     // Noble Sacrifice
-    584: {trigger: [secret, summon]},
+    584: {trigger: [secret, spell, summon]},
     // Redemption
-    140: {trigger: [secret, summon]},
+    140: {trigger: [secret, spell, summon]},
     // Repentance
-    232: {trigger: [secret]},
+    232: {trigger: [secret, spell], affinity: [damage_enemy]},
     // Equality
-    756: {affinity: [damage_enemy]},
+    756: {trigger: [spell], affinity: [damage_enemy]},
     // Holy Light
-    291: {trigger: [heal_minion, heal_hero]},
+    291: {trigger: [spell, heal_minion, heal_hero]},
     // Argent Protector
     1022: {trigger: [divine_shield]},
     // Sword of Justice
     643: {trigger: [weapon], listen: [summon]},
     // Divine Favor
-    679: {},
+    679: {trigger: [spell]},
     // Aldor Peacekeeper
     1167: {},
     // Truesilver Champion
     847: {trigger: [weapon, heal_hero]},
     // Blessing of Kings
-    943: {affinity: [summon]},
+    943: {trigger: [spell], affinity: [summon]},
     // Consecration
-    476: {trigger: [damage_enemy]},
+    476: {trigger: [spell, damage_enemy]},
     // Hammer of Wrath
-    250: {trigger: [damage_enemy]},
+    250: {trigger: [spell, damage_enemy]},
     // Blessed Champion
-    1522: {},
+    1522: {trigger: [spell]},
     // Holy Wrath
-    435: {trigger: [damage_enemy]},
+    435: {trigger: [spell, damage_enemy]},
     // Avenging Wrath
-    1174: {trigger: [damage_enemy]},
+    1174: {trigger: [spell, damage_enemy]},
     // Guardian of Kings
     1068: {trigger: [heal_hero]},
     // Lay on Hands
-    594: {trigger: [heal_hero, heal_minion]},
+    594: {trigger: [spell, heal_hero, heal_minion]},
     // Tirion Fordring
     890: {trigger: [divine_shield, weapon]},
 
@@ -213,7 +273,7 @@ with (App.cards.synergieTypes) {
     // Snake Trap
     455:  {trigger: [summon, beast]},
     // Freezing Trap
-    519:  {trigger: [secret]},
+    519:  {trigger: [secret, spell]},
     // Explosive Trap
     585:  {trigger: [damage_enemy]},
     // Timber Wolf
@@ -221,11 +281,11 @@ with (App.cards.synergieTypes) {
     // Tundra Rhino
     699:  {trigger: [beast], listen: [beast]},
     // Snipe
-    814:  {trigger: [secret, damage_enemy]},
+    814:  {trigger: [secret, spell, damage_enemy]},
     // Arcane Shot
     877:  {trigger: [damage_enemy, damage_friend]},
     // Flare
-    896:  {listen: [secret]},
+    896:  {listen: [secret, spell]},
     // Bestial Wrath
     903:  {listen: [beast]},
     // Houndmaster
@@ -233,7 +293,7 @@ with (App.cards.synergieTypes) {
     // Tracking
     1047: {},
     // Misdirection
-    1091: {trigger: [secret]},
+    1091: {trigger: [secret, spell]},
     // Deadly Shot
     1093: {trigger: [kill]},
     // King Krush
@@ -361,7 +421,7 @@ with (App.cards.synergieTypes) {
     // Bloodfen Raptor
     216: {trigger: [beast]},
     // Bloodmage Thalnos
-    749: {listen: [spell]},
+    749: {trigger: [spell_damage]},
     // Bluegill Warrior
     739: {trigger: [murloc]},
     // Captain's Parrot
@@ -381,7 +441,7 @@ with (App.cards.synergieTypes) {
     // Knife Juggler
     1073: {listen: [summon]},
     // Kobold Geomancer
-    672:  {listen: [spell]},
+    672:  {trigger: [spell_damage]},
     // Loot Hoarder
     251:  {},
     // Lorewalker Cho
@@ -409,7 +469,7 @@ with (App.cards.synergieTypes) {
     // Sunfury Protector
     891:  {trigger: [taunt]},
     // Wild Pyromancer
-    1014: {trigger: [damage_enemy, damage_friend], listen: [spell]},
+    1014: {trigger: [damage_enemy, damage_friend], listen: [spell, spell_damage]},
     // Youthful Brewmaster
     415:  {},
     // Acolyte of Pain
@@ -427,7 +487,7 @@ with (App.cards.synergieTypes) {
     // Coldlight Seer
     453:  {trigger: [murloc], listen: [murloc]},
     // Dalaran Mage
-    175:  {listen: [spell]},
+    175:  {trigger: [spell_damage]},
     // Demolisher
     979:  {trigger: [damage_enemy]},
     // Earthen Ring Farseer
