@@ -8,7 +8,7 @@ var App = {
       // Build the DOM for D3.js
       App.build.d3();
       // Filter regarding the #hash or #all if not specified
-      App.filter(window.location.hash.substring(1) || 'all');
+      App.filter();
     })
   },
 
@@ -113,7 +113,27 @@ var App = {
         $('#legend')
           .append($('<li></li>')
             .addClass(type)
-            .html("<a>— " + type.replace('_', ' ') + "</a>")
+            .html("<a>" + type.replace('_', ' ') + "</a>")
+            .click(function(e) {
+              if (e.altKey || e.shiftKey) {
+                $("#legend li").addClass('disabled');
+                $(this).removeClass('disabled');
+              } else {
+                $(this).toggleClass('disabled');
+              }
+              App.filter();
+            }).hover(function() {
+              var css = $('body style.legend');
+              var type = $(this).attr('class').split(' ')[0];
+              if (css.length == 0) {
+                css = $('<style class="legend">' +
+                        "svg ." + type + " {stroke-width: 3px; }\n" +
+                        '</style>');
+              }
+              $('body').append(css);
+            }, function() {
+              $('body style.legend').remove();
+            })
           );
           color = App.build.colors[Object.keys(App.build.colors)[color_group]][color_i];
           css += "svg ." + type + " { stroke: " + color + "; }\n";
@@ -183,10 +203,11 @@ var App = {
           .attr("id", String)
           .attr("viewBox", "0 -5 10 10")
           .attr("refX", 17)
-          .attr("refY", -1)
-          .attr("markerWidth", 6)
-          .attr("markerHeight", 6)
+          .attr("refY", -0.5)
+          .attr("markerWidth", 9)
+          .attr("markerHeight", 9)
           .attr("orient", "auto")
+          .attr("markerUnits", "userSpaceOnUse")
           .append("svg:path")
           .attr("d", "M0,-5L10,0L0,5");
 
@@ -307,6 +328,7 @@ var App = {
   },
 
   filter: function(query) {
+    query = query || window.location.hash.substring(1) || 'all';
     $('#classes li.active').removeClass('active');
     $('.rightbar').hide();
 
@@ -389,6 +411,19 @@ var App = {
         }));
       }
     }
+
+    // Disabled links
+    var disabled = [];
+    $("#legend .disabled").each(function() {
+      disabled.push($(this).attr('class').split(' ')[0]);
+    });
+    if (disabled.length > 0) {
+      App.d3.force.links(App.d3.force.links().filter(function(link) {
+        return disabled.indexOf(link.type) == -1;
+      }));
+    }
+
+    // Refresh
     App.d3.refresh();
   },
 

@@ -133,5 +133,11 @@ svg g.card.legendary circle {
   color: transparent;
   padding: 1px 8px;
   font-size: 80%;
+  cursor: pointer;
+}
+
+#legend li.disabled {
+  text-decoration: line-through;
+  font-style: italic;
 }
 
